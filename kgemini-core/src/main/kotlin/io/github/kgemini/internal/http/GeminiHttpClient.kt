@@ -6,6 +6,7 @@ import io.github.kgemini.internal.plugin.TimeoutPlugin
 import io.github.kgemini.internal.serialization.geminiJson
 import io.ktor.client.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.HttpTimeoutConfig.Companion.INFINITE_TIMEOUT_MS
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -67,6 +68,10 @@ internal class GeminiHttpClient(
             contentType(ContentType.Application.Json)
             setBody(body)
             parameter("alt", "sse")
+            timeout {
+                requestTimeoutMillis = INFINITE_TIMEOUT_MS
+                socketTimeoutMillis = INFINITE_TIMEOUT_MS
+            }
         }
     }
 
