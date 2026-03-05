@@ -7,9 +7,40 @@ public sealed interface GeminiModel {
     public val id: String
 
     public enum class Known(override val id: String) : GeminiModel {
+        /**
+         * Gemini 2.0 Flash — fast, versatile multimodal model.
+         *
+         * - Context: 1,048,576 tokens
+         * - Pricing: $0.10 / 1M input, $0.40 / 1M output
+         * - Best for: general chat, summarization, classification
+         */
         FLASH_2_0("gemini-2.0-flash"),
+
+        /**
+         * Gemini 2.0 Flash Lite — lightweight, cost-efficient model.
+         *
+         * - Context: 1,048,576 tokens
+         * - Pricing: $0.075 / 1M input, $0.30 / 1M output
+         * - Best for: cost-sensitive, high-throughput tasks
+         */
         FLASH_2_0_LITE("gemini-2.0-flash-lite"),
+
+        /**
+         * Gemini 2.5 Flash — enhanced reasoning with thinking capabilities.
+         *
+         * - Context: 1,048,576 tokens
+         * - Pricing: $0.15 / 1M input, $0.60 / 1M output
+         * - Best for: complex reasoning, code generation, agentic tasks
+         */
         FLASH_2_5("gemini-2.5-flash"),
+
+        /**
+         * Gemini 2.5 Pro — most capable model for advanced tasks.
+         *
+         * - Context: 1,048,576 tokens
+         * - Pricing: $1.25 / 1M input, $10.00 / 1M output
+         * - Best for: advanced reasoning, planning, multi-step problem solving
+         */
         PRO_2_5("gemini-2.5-pro"),
     }
 

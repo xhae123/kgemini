@@ -1,3 +1,3 @@
 rootProject.name = "kgemini"
 
-include("kgemini-core")
+include("kgemini-core", "kgemini-models")
