@@ -1,0 +1,15 @@
+package io.github.kgemini.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+public data class GenerationConfig(
+    val temperature: Double? = null,
+    val topP: Double? = null,
+    val topK: Int? = null,
+    val candidateCount: Int? = null,
+    val maxOutputTokens: Int? = null,
+    val stopSequences: List<String>? = null,
+    val responseMimeType: String? = null,
+    val seed: Int? = null,
+)

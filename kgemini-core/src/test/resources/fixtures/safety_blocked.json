@@ -1,0 +1,19 @@
+{
+  "candidates": [
+    {
+      "finishReason": "SAFETY",
+      "safetyRatings": [
+        {
+          "category": "HARM_CATEGORY_HARASSMENT",
+          "probability": "HIGH",
+          "blocked": true
+        }
+      ],
+      "index": 0
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 5,
+    "totalTokenCount": 5
+  }
+}
