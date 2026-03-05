@@ -20,9 +20,9 @@ internal fun resolveEngine(engine: GeminiEngine): HttpClientEngineFactory<*> {
 private fun loadEngineOrFallback(className: String): HttpClientEngineFactory<*> {
     return try {
         val clazz = Class.forName(className)
-        // Ktor 엔진은 Kotlin object — INSTANCE 필드로 접근
+        // Ktor engines are Kotlin objects — access via INSTANCE field
         clazz.getField("INSTANCE").get(null) as HttpClientEngineFactory<*>
-    } catch (_: ClassNotFoundException) {
+    } catch (_: ReflectiveOperationException) {
         CIO
     }
 }
@@ -32,7 +32,7 @@ private fun tryLoadOkHttp(): HttpClientEngineFactory<*>? {
     return try {
         val clazz = Class.forName("io.ktor.client.engine.okhttp.OkHttp")
         clazz.getField("INSTANCE").get(null) as HttpClientEngineFactory<*>
-    } catch (_: ClassNotFoundException) {
+    } catch (_: ReflectiveOperationException) {
         null
     }
 }

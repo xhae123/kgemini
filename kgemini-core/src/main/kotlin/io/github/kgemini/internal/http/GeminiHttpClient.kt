@@ -52,8 +52,6 @@ internal class GeminiHttpClient(
         install(TimeoutPlugin) {
             this.connect = connectTimeout
             this.generate = generateTimeout
-            this.streamFirstByte = streamFirstByte
-            this.streamIdle = streamIdle
         }
 
         install(ErrorMappingPlugin)

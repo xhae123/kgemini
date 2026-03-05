@@ -56,21 +56,23 @@ class GenerateStreamTest : FunSpec({
             )
         }
 
-        val responseText = client.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent"
-        ) {
-            contentType(ContentType.Application.Json)
-            setBody("{}")
-            parameter("alt", "sse")
-        }.bodyAsText()
+        client.use {
+            val responseText = it.post(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent"
+            ) {
+                contentType(ContentType.Application.Json)
+                setBody("{}")
+                parameter("alt", "sse")
+            }.bodyAsText()
 
-        val chunks = parseSseChunks(responseText)
+            val chunks = parseSseChunks(responseText)
 
-        chunks shouldHaveSize 2
-        chunks[0].text shouldBe "Hello"
-        chunks[1].text shouldBe " world!"
-        chunks[1].candidates?.first()?.finishReason shouldBe "STOP"
-        chunks[1].usageMetadata?.totalTokenCount shouldBe 5
+            chunks shouldHaveSize 2
+            chunks[0].text shouldBe "Hello"
+            chunks[1].text shouldBe " world!"
+            chunks[1].candidates?.first()?.finishReason shouldBe "STOP"
+            chunks[1].usageMetadata?.totalTokenCount shouldBe 5
+        }
     }
 
     test("빈 줄과 data: 외 SSE 라인은 무시된다") {
@@ -91,18 +93,20 @@ class GenerateStreamTest : FunSpec({
             )
         }
 
-        val responseText = client.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent"
-        ) {
-            contentType(ContentType.Application.Json)
-            setBody("{}")
-            parameter("alt", "sse")
-        }.bodyAsText()
+        client.use {
+            val responseText = it.post(
+                "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent"
+            ) {
+                contentType(ContentType.Application.Json)
+                setBody("{}")
+                parameter("alt", "sse")
+            }.bodyAsText()
 
-        val chunks = parseSseChunks(responseText)
+            val chunks = parseSseChunks(responseText)
 
-        chunks shouldHaveSize 1
-        chunks[0].text shouldBe "only this"
+            chunks shouldHaveSize 1
+            chunks[0].text shouldBe "only this"
+        }
     }
 
     test("스트림 에러 응답 — 400 → InvalidRequestException") {
@@ -114,12 +118,14 @@ class GenerateStreamTest : FunSpec({
             )
         }
 
-        shouldThrow<InvalidRequestException> {
-            client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent") {
-                contentType(ContentType.Application.Json)
-                setBody("{}")
-                parameter("alt", "sse")
-            }.bodyAsText()
+        client.use {
+            shouldThrow<InvalidRequestException> {
+                it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:streamGenerateContent") {
+                    contentType(ContentType.Application.Json)
+                    setBody("{}")
+                    parameter("alt", "sse")
+                }.bodyAsText()
+            }
         }
     }
 })

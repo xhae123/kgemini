@@ -3,8 +3,6 @@ package io.github.kgemini.internal.plugin
 import io.ktor.client.plugins.api.*
 import io.ktor.client.request.*
 
-internal val ApiKeyAttributeKey = io.ktor.util.AttributeKey<String>("GeminiApiKey")
-
 internal val AuthPlugin = createClientPlugin("GeminiAuth", ::AuthPluginConfig) {
     val apiKey = pluginConfig.apiKey
 

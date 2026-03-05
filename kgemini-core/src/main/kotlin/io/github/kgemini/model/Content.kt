@@ -25,9 +25,9 @@ public data class Content(
 }
 
 /**
- * Gemini API Part — flat JSON 구조.
- * `{"text": "hello"}` 또는 `{"inlineData": {"mimeType": "...", "data": "..."}}`.
- * 필드 존재 여부로 타입 구분 (discriminated union이 아님).
+ * Gemini API Part — flat JSON structure.
+ * e.g. `{"text": "hello"}` or `{"inlineData": {"mimeType": "...", "data": "..."}}`.
+ * Type is determined by field presence (not a discriminated union).
  */
 @Serializable
 public data class Part(

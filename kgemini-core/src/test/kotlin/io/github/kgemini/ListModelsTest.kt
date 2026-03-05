@@ -49,13 +49,15 @@ class ListModelsTest : FunSpec({
             )
         }
 
-        val responseText = client.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
-        val response = geminiJson.decodeFromString<ListModelsResponse>(responseText)
+        client.use {
+            val responseText = it.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+            val response = geminiJson.decodeFromString<ListModelsResponse>(responseText)
 
-        response.models shouldHaveSize 2
-        response.models[0].name shouldBe "models/gemini-2.0-flash"
-        response.models[0].inputTokenLimit shouldBe 1048576
-        response.models[1].displayName shouldBe "Gemini 2.5 Pro"
+            response.models shouldHaveSize 2
+            response.models[0].name shouldBe "models/gemini-2.0-flash"
+            response.models[0].inputTokenLimit shouldBe 1048576
+            response.models[1].displayName shouldBe "Gemini 2.5 Pro"
+        }
     }
 
     test("getModel — 정상 응답") {
@@ -79,11 +81,13 @@ class ListModelsTest : FunSpec({
             )
         }
 
-        val responseText = client.get("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash").bodyAsText()
-        val model = geminiJson.decodeFromString<ModelInfo>(responseText)
+        client.use {
+            val responseText = it.get("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash").bodyAsText()
+            val model = geminiJson.decodeFromString<ModelInfo>(responseText)
 
-        model.name shouldBe "models/gemini-2.0-flash"
-        model.inputTokenLimit shouldBe 1048576
+            model.name shouldBe "models/gemini-2.0-flash"
+            model.inputTokenLimit shouldBe 1048576
+        }
     }
 
     test("listModels — 401 인증 실패 → AuthenticationException") {
@@ -95,8 +99,10 @@ class ListModelsTest : FunSpec({
             )
         }
 
-        shouldThrow<AuthenticationException> {
-            client.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+        client.use {
+            shouldThrow<AuthenticationException> {
+                it.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+            }
         }
     }
 
@@ -109,8 +115,10 @@ class ListModelsTest : FunSpec({
             )
         }
 
-        shouldThrow<ModelNotFoundException> {
-            client.get("https://generativelanguage.googleapis.com/v1beta/models/nonexistent").bodyAsText()
+        client.use {
+            shouldThrow<ModelNotFoundException> {
+                it.get("https://generativelanguage.googleapis.com/v1beta/models/nonexistent").bodyAsText()
+            }
         }
     }
 
@@ -126,15 +134,14 @@ class ListModelsTest : FunSpec({
             )
         }
 
-        client.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+        client.use {
+            it.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+        }
         capturedKey shouldBe "test-key"
     }
 
     test("전체 파이프라인 관통 — KGemini → GeminiHttpClient → Plugin → MockEngine") {
-        // KGemini는 내부적으로 CIO 엔진을 사용하므로 직접 MockEngine 주입이 어려움.
-        // 대신 동일한 Plugin chain을 mockClient로 재현하여 통합 검증.
         val client = mockClient { request ->
-            // AuthPlugin이 key를 주입했는지 확인
             val key = request.url.parameters["key"]
             if (key != "test-key") {
                 respond(
@@ -150,8 +157,10 @@ class ListModelsTest : FunSpec({
             }
         }
 
-        val responseText = client.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
-        val response = geminiJson.decodeFromString<ListModelsResponse>(responseText)
-        response.models shouldHaveSize 2
+        client.use {
+            val responseText = it.get("https://generativelanguage.googleapis.com/v1beta/models").bodyAsText()
+            val response = geminiJson.decodeFromString<ListModelsResponse>(responseText)
+            response.models shouldHaveSize 2
+        }
     }
 })

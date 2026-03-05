@@ -50,14 +50,16 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        val responseText = client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-            contentType(ContentType.Application.Json)
-            setBody(GenerateContentRequest(contents = listOf(Content.user("Hello"))))
-        }.bodyAsText()
-        val response = geminiJson.decodeFromString<GenerateContentResponse>(responseText)
+        client.use {
+            val responseText = it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                contentType(ContentType.Application.Json)
+                setBody(GenerateContentRequest(contents = listOf(Content.user("Hello"))))
+            }.bodyAsText()
+            val response = geminiJson.decodeFromString<GenerateContentResponse>(responseText)
 
-        response.text shouldBe "Hello! How can I help you today?"
-        response.usageMetadata?.totalTokenCount shouldBe 10
+            response.text shouldBe "Hello! How can I help you today?"
+            response.usageMetadata?.totalTokenCount shouldBe 10
+        }
     }
 
     test("generate(prompt) { generationConfig = ... } — DSL 설정이 Request에 반영") {
@@ -72,15 +74,17 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        val builder = GenerateContentRequest.Builder().apply {
-            generationConfig = GenerationConfig(temperature = 0.5, maxOutputTokens = 100)
-        }
-        val builtRequest = builder.build("Test prompt")
+        client.use {
+            val builder = GenerateContentRequest.Builder().apply {
+                generationConfig = GenerationConfig(temperature = 0.5, maxOutputTokens = 100)
+            }
+            val builtRequest = builder.build("Test prompt")
 
-        val responseText = client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-            contentType(ContentType.Application.Json)
-            setBody(builtRequest)
-        }.bodyAsText()
+            it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                contentType(ContentType.Application.Json)
+                setBody(builtRequest)
+            }.bodyAsText()
+        }
 
         capturedBody!! shouldContain "\"temperature\""
         capturedBody!! shouldContain "\"maxOutputTokens\""
@@ -99,17 +103,19 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        val request = GenerateContentRequest(
-            contents = listOf(Content.user("Direct request")),
-        )
+        client.use {
+            val request = GenerateContentRequest(
+                contents = listOf(Content.user("Direct request")),
+            )
 
-        val responseText = client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        }.bodyAsText()
-        val response = geminiJson.decodeFromString<GenerateContentResponse>(responseText)
+            val responseText = it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }.bodyAsText()
+            val response = geminiJson.decodeFromString<GenerateContentResponse>(responseText)
 
-        response.text shouldBe "Hello! How can I help you today?"
+            response.text shouldBe "Hello! How can I help you today?"
+        }
     }
 
     test("generate — 400 → InvalidRequestException") {
@@ -121,11 +127,13 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        shouldThrow<InvalidRequestException> {
-            client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-                contentType(ContentType.Application.Json)
-                setBody(GenerateContentRequest(contents = listOf(Content.user("bad"))))
-            }.bodyAsText()
+        client.use {
+            shouldThrow<InvalidRequestException> {
+                it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                    contentType(ContentType.Application.Json)
+                    setBody(GenerateContentRequest(contents = listOf(Content.user("bad"))))
+                }.bodyAsText()
+            }
         }
     }
 
@@ -138,11 +146,13 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        shouldThrow<RateLimitException> {
-            client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-                contentType(ContentType.Application.Json)
-                setBody(GenerateContentRequest(contents = listOf(Content.user("rate limited"))))
-            }.bodyAsText()
+        client.use {
+            shouldThrow<RateLimitException> {
+                it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                    contentType(ContentType.Application.Json)
+                    setBody(GenerateContentRequest(contents = listOf(Content.user("rate limited"))))
+                }.bodyAsText()
+            }
         }
     }
 
@@ -158,14 +168,16 @@ class GenerateContentTest : FunSpec({
             )
         }
 
-        val builtRequest = GenerateContentRequest.Builder().apply {
-            systemInstruction = "You are a helpful assistant."
-        }.build("Hello")
+        client.use {
+            val builtRequest = GenerateContentRequest.Builder().apply {
+                systemInstruction = "You are a helpful assistant."
+            }.build("Hello")
 
-        client.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
-            contentType(ContentType.Application.Json)
-            setBody(builtRequest)
-        }.bodyAsText()
+            it.post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent") {
+                contentType(ContentType.Application.Json)
+                setBody(builtRequest)
+            }.bodyAsText()
+        }
 
         capturedBody!! shouldContain "You are a helpful assistant."
         capturedBody!! shouldContain "systemInstruction"

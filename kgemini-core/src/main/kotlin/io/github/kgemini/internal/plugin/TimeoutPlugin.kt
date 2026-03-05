@@ -4,6 +4,7 @@ import io.github.kgemini.exception.ConnectTimeoutException
 import io.github.kgemini.exception.GenerateTimeoutException
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.api.*
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -19,10 +20,12 @@ internal val TimeoutPlugin = createClientPlugin("GeminiTimeout", ::TimeoutPlugin
         }
     }
 
-    on(ResponseException) { cause ->
-        when (cause) {
-            is HttpRequestTimeoutException -> throw GenerateTimeoutException(cause = cause)
-            is ConnectTimeoutException -> throw ConnectTimeoutException(cause = cause)
+    on(RequestExceptionHook) { cause ->
+        when {
+            cause is CancellationException -> throw cause
+            cause is HttpRequestTimeoutException -> throw GenerateTimeoutException(cause = cause)
+            cause is io.ktor.client.network.sockets.ConnectTimeoutException ->
+                throw ConnectTimeoutException(cause = cause)
             else -> throw cause
         }
     }
@@ -31,12 +34,13 @@ internal val TimeoutPlugin = createClientPlugin("GeminiTimeout", ::TimeoutPlugin
 internal class TimeoutPluginConfig {
     var connect: Duration = 5.seconds
     var generate: Duration = 30.seconds
-    var streamFirstByte: Duration = 10.seconds
-    var streamIdle: Duration = 5.seconds
 }
 
-// Ktor의 ResponseException hook를 커스텀 Plugin에서 사용하기 위한 hook 정의
-internal object ResponseException :
+/**
+ * Hook that intercepts exceptions thrown during request execution,
+ * allowing mapping of Ktor exceptions to kgemini's exception hierarchy.
+ */
+internal object RequestExceptionHook :
     ClientHook<suspend (cause: Throwable) -> Unit> {
     override fun install(
         client: io.ktor.client.HttpClient,
@@ -45,6 +49,8 @@ internal object ResponseException :
         client.requestPipeline.intercept(io.ktor.client.request.HttpRequestPipeline.Before) {
             try {
                 proceed()
+            } catch (cause: CancellationException) {
+                throw cause
             } catch (cause: Throwable) {
                 handler(cause)
             }

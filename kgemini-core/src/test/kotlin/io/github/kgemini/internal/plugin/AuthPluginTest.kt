@@ -21,7 +21,9 @@ class AuthPluginTest : FunSpec({
             }
         }
 
-        client.get("https://generativelanguage.googleapis.com/v1beta/models")
+        client.use {
+            it.get("https://generativelanguage.googleapis.com/v1beta/models")
+        }
         capturedUrl!!.parameters["key"] shouldBe "test-api-key-123"
     }
 
@@ -37,7 +39,9 @@ class AuthPluginTest : FunSpec({
             }
         }
 
-        client.get("https://example.com/api?alt=sse")
+        client.use {
+            it.get("https://example.com/api?alt=sse")
+        }
         capturedUrl!!.parameters["key"] shouldBe "my-key"
         capturedUrl!!.parameters["alt"] shouldBe "sse"
     }
