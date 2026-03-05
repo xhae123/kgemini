@@ -20,6 +20,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class GeminiHttpClient(
     apiKey: String,
     engine: GeminiEngine = GeminiEngine.CIO,
+    testEngine: io.ktor.client.engine.HttpClientEngine? = null,
     connectTimeout: Duration = 5.seconds,
     generateTimeout: Duration = 30.seconds,
     streamFirstByte: Duration = 10.seconds,
@@ -29,7 +30,15 @@ internal class GeminiHttpClient(
     val streamFirstByteTimeout: Duration = streamFirstByte
     val streamIdleTimeout: Duration = streamIdle
 
-    val client: HttpClient = HttpClient(resolveEngine(engine)) {
+    val client: HttpClient = if (testEngine != null) HttpClient(testEngine) {
+        install(ContentNegotiation) {
+            json(geminiJson)
+        }
+        install(AuthPlugin) {
+            this.apiKey = apiKey
+        }
+        install(ErrorMappingPlugin)
+    } else HttpClient(resolveEngine(engine)) {
         install(ContentNegotiation) {
             json(geminiJson)
         }

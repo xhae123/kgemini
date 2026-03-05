@@ -13,6 +13,9 @@ import io.ktor.client.statement.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -31,6 +34,7 @@ public class KGemini(
     internal val httpClient: GeminiHttpClient = GeminiHttpClient(
         apiKey = apiKey,
         engine = config.engine,
+        testEngine = config.testEngine,
         connectTimeout = config.connectTimeout,
         generateTimeout = config.generateTimeout,
         streamFirstByte = config.streamFirstByte,
@@ -73,6 +77,18 @@ public class KGemini(
         request: GenerateContentRequest,
     ): GenerateContentResponse {
         return httpClient.post(Endpoints.generateContent(config.model.id), request)
+    }
+
+    /**
+     * 여러 프롬프트를 병렬로 생성. 결과는 입력 순서 보장.
+     */
+    public suspend fun generateAll(
+        vararg prompts: String,
+        configure: GenerateContentRequest.Builder.() -> Unit = {},
+    ): List<GenerateContentResponse> = coroutineScope {
+        prompts.map { prompt ->
+            async { generate(prompt, configure) }
+        }.awaitAll()
     }
 
     /**

@@ -8,6 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 public class KGeminiConfig internal constructor() {
     public var model: GeminiModel = GeminiModel.Known.FLASH_2_0
     public var engine: GeminiEngine = GeminiEngine.CIO
+    internal var testEngine: io.ktor.client.engine.HttpClientEngine? = null
 
     internal var connectTimeout: Duration = 5.seconds
     internal var generateTimeout: Duration = 30.seconds
