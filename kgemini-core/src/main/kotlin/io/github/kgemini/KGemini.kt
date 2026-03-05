@@ -5,6 +5,9 @@ import io.github.kgemini.exception.StreamTimeoutException
 import io.github.kgemini.internal.http.Endpoints
 import io.github.kgemini.internal.http.GeminiHttpClient
 import io.github.kgemini.internal.serialization.geminiJson
+import io.github.kgemini.model.Content
+import io.github.kgemini.model.CountTokensRequest
+import io.github.kgemini.model.CountTokensResponse
 import io.github.kgemini.model.GenerateContentRequest
 import io.github.kgemini.model.GenerateContentResponse
 import io.github.kgemini.model.ListModelsResponse
@@ -155,6 +158,21 @@ public class KGemini(
             )
         }
     }.flowOn(Dispatchers.Default)
+
+    /**
+     * POST /models/{model}:countTokens — 토큰 수 카운트 (편의 API).
+     */
+    public suspend fun countTokens(prompt: String): CountTokensResponse {
+        val request = CountTokensRequest(contents = listOf(Content.user(prompt)))
+        return countTokens(request)
+    }
+
+    /**
+     * POST /models/{model}:countTokens — 토큰 수 카운트 (Request 직접 전달).
+     */
+    public suspend fun countTokens(request: CountTokensRequest): CountTokensResponse {
+        return httpClient.post(Endpoints.countTokens(config.model.id), request)
+    }
 
     override fun close() {
         httpClient.close()
