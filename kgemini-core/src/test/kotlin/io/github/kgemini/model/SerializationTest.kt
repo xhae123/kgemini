@@ -38,12 +38,6 @@ class SerializationTest : FunSpec({
         response.totalTokens shouldBe 7
     }
 
-    test("EmbedContentResponse 역직렬화") {
-        val response = geminiJson.decodeFromString<EmbedContentResponse>(fixture("embed_content.json"))
-        response.embedding.shouldNotBeNull()
-        response.embedding!!.values shouldHaveSize 5
-    }
-
     test("ErrorResponse 역직렬화") {
         val response = geminiJson.decodeFromString<ErrorResponse>(fixture("error_401.json"))
         response.error.shouldNotBeNull()

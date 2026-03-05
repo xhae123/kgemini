@@ -18,7 +18,4 @@ internal object Endpoints {
 
     fun countTokens(modelId: String): String =
         "$BASE_URL/models/$modelId:countTokens"
-
-    fun embedContent(modelId: String): String =
-        "$BASE_URL/models/$modelId:embedContent"
 }
