@@ -73,6 +73,25 @@ response.text          // generated text
 response.totalTokens   // token usage
 ```
 
+## Models
+
+Use aliases for quick selection, or specify any model ID directly.
+
+| Alias | Model | Description |
+|-------|-------|-------------|
+| `free` | gemini-2.0-flash | Free tier. Good enough for most use cases |
+| `fast` | gemini-2.0-flash | Fastest responses |
+| `cheap` | gemini-2.0-flash-lite | Cheapest. For bulk processing |
+| `smart` | gemini-2.5-pro | Smartest. For complex reasoning |
+
+Default is `free` (no config needed).
+
+```bash
+export GEMINI_MODEL=smart
+```
+
+Any valid Gemini model ID also works directly: `gemini-2.5-flash`, `gemini-2.5-pro-latest`, etc.
+
 ## Configuration
 
 Zero config required. Sensible defaults just work.
