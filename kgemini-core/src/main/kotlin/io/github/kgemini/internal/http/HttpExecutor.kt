@@ -63,7 +63,8 @@ internal class JdkHttpExecutor(connectTimeoutMs: Long) : HttpExecutor {
         return HttpResult(
             statusCode = response.statusCode(),
             body = response.body(),
-            headers = response.headers().map(),
+            // HTTP/1.1 헤더 키가 대소문자 혼용될 수 있으므로 소문자로 정규화
+            headers = response.headers().map().mapKeys { (k, _) -> k.lowercase() },
         )
     }
 }
