@@ -2,14 +2,36 @@
 .gradle/
 build/
 **/build/
+!gradle/wrapper/gradle-wrapper.jar
 
 # IDE
 .idea/
 *.iml
+*.ipr
+*.iws
 .vscode/
+.settings/
+.project
+.classpath
+*.swp
+*~
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Kotlin
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+
+# Environment / Secrets
+.env
+.env.*
+gemini.properties
+gemini.yml
 
 # Personal notes
 DDIA_NOTES.md
