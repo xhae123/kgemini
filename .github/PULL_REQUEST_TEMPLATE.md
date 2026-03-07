@@ -16,5 +16,5 @@ Closes #
 - [ ] Code follows existing patterns and conventions
 - [ ] All public API has explicit visibility modifiers (`explicitApi()`)
 - [ ] Tests added/updated for new functionality
-- [ ] `./gradlew :kgemini-core:build` passes
+- [ ] `./gradlew build` passes
 - [ ] Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
