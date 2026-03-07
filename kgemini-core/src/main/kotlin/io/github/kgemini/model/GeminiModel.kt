@@ -24,37 +24,31 @@ public sealed interface GeminiModel {
 
     public enum class Known(override val id: String) : GeminiModel {
         /**
-         * Gemini 2.0 Flash — fast, versatile multimodal model.
+         * Gemini 2.5 Flash — best price-performance for most tasks.
          *
          * - Context: 1,048,576 tokens
-         * - Pricing: $0.10 / 1M input, $0.40 / 1M output
-         * - Best for: general chat, summarization, classification
-         */
-        FLASH_2_0("gemini-2.0-flash"),
-
-        /**
-         * Gemini 2.0 Flash Lite — lightweight, cost-efficient model.
-         *
-         * - Context: 1,048,576 tokens
-         * - Pricing: $0.075 / 1M input, $0.30 / 1M output
-         * - Best for: cost-sensitive, high-throughput tasks
-         */
-        FLASH_2_0_LITE("gemini-2.0-flash-lite"),
-
-        /**
-         * Gemini 2.5 Flash — enhanced reasoning with thinking capabilities.
-         *
-         * - Context: 1,048,576 tokens
-         * - Pricing: $0.15 / 1M input, $0.60 / 1M output
-         * - Best for: complex reasoning, code generation, agentic tasks
+         * - Pricing: $0.30 / 1M input, $2.50 / 1M output
+         * - Free tier available
+         * - Best for: general chat, code generation, agentic tasks
          */
         FLASH_2_5("gemini-2.5-flash"),
 
         /**
-         * Gemini 2.5 Pro — most capable model for advanced tasks.
+         * Gemini 2.5 Flash Lite — fastest and most budget-friendly.
+         *
+         * - Context: 1,048,576 tokens
+         * - Pricing: $0.10 / 1M input, $0.40 / 1M output
+         * - Free tier available
+         * - Best for: high-throughput, low-latency, cost-sensitive tasks
+         */
+        FLASH_2_5_LITE("gemini-2.5-flash-lite"),
+
+        /**
+         * Gemini 2.5 Pro — most capable model for complex reasoning.
          *
          * - Context: 1,048,576 tokens
          * - Pricing: $1.25 / 1M input, $10.00 / 1M output
+         * - Free tier available
          * - Best for: advanced reasoning, planning, multi-step problem solving
          */
         PRO_2_5("gemini-2.5-pro"),

@@ -33,7 +33,7 @@ class GenerateContentTest : FunSpec({
 
     fun testConfig() = GeminiConfig(
         apiKey = "test-key",
-        model = "gemini-2.0-flash",
+        model = "gemini-2.5-flash",
         connectTimeoutMs = 5_000,
         generateTimeoutMs = 30_000,
         maxRetries = 0,

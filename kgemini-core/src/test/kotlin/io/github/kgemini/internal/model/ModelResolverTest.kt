@@ -21,16 +21,16 @@ import io.kotest.matchers.shouldBe
 
 class ModelResolverTest : FunSpec({
 
-    test("free → gemini-2.0-flash") {
-        ModelResolver.resolve("free") shouldBe "gemini-2.0-flash"
+    test("free → gemini-2.5-flash") {
+        ModelResolver.resolve("free") shouldBe "gemini-2.5-flash"
     }
 
-    test("fast → gemini-2.0-flash") {
-        ModelResolver.resolve("fast") shouldBe "gemini-2.0-flash"
+    test("fast → gemini-2.5-flash-lite") {
+        ModelResolver.resolve("fast") shouldBe "gemini-2.5-flash-lite"
     }
 
-    test("cheap → gemini-2.0-flash-lite") {
-        ModelResolver.resolve("cheap") shouldBe "gemini-2.0-flash-lite"
+    test("cheap → gemini-2.5-flash-lite") {
+        ModelResolver.resolve("cheap") shouldBe "gemini-2.5-flash-lite"
     }
 
     test("smart → gemini-2.5-pro") {
@@ -38,7 +38,7 @@ class ModelResolverTest : FunSpec({
     }
 
     test("대소문자 무관") {
-        ModelResolver.resolve("FREE") shouldBe "gemini-2.0-flash"
+        ModelResolver.resolve("FREE") shouldBe "gemini-2.5-flash"
         ModelResolver.resolve("Smart") shouldBe "gemini-2.5-pro"
     }
 

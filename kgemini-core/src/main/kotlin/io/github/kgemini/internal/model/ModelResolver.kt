@@ -19,9 +19,9 @@ package io.github.kgemini.internal.model
 internal object ModelResolver {
 
     private val aliases = mapOf(
-        "free" to "gemini-2.0-flash",
-        "fast" to "gemini-2.0-flash",
-        "cheap" to "gemini-2.0-flash-lite",
+        "free" to "gemini-2.5-flash",
+        "fast" to "gemini-2.5-flash-lite",
+        "cheap" to "gemini-2.5-flash-lite",
         "smart" to "gemini-2.5-pro",
     )
 
