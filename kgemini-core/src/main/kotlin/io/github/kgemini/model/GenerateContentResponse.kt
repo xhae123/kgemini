@@ -28,6 +28,9 @@ public data class GenerateContentResponse(
         get() = candidates?.firstOrNull()?.content?.parts
             ?.mapNotNull { it.text }
             ?.joinToString("")
+
+    public val totalTokens: Int?
+        get() = usageMetadata?.totalTokenCount
 }
 
 @Serializable

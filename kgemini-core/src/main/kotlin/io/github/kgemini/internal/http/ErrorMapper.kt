@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package io.github.kgemini.internal.plugin
+package io.github.kgemini.internal.http
 
 import io.github.kgemini.exception.*
 import io.github.kgemini.internal.serialization.geminiJson
 import io.github.kgemini.model.ErrorResponse
-import io.ktor.client.plugins.api.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
 import kotlin.time.Duration.Companion.seconds
 
-internal val ErrorMappingPlugin = createClientPlugin("GeminiErrorMapping") {
-    onResponse { response ->
-        if (response.status.isSuccess()) return@onResponse
+internal object ErrorMapper {
 
-        val body = response.bodyAsText()
+    fun throwIfError(result: HttpResult) {
+        if (result.statusCode in 200..299) return
+
         val errorMessage = try {
-            val errorResponse = geminiJson.decodeFromString<ErrorResponse>(body)
-            errorResponse.error?.message ?: body
+            val errorResponse = geminiJson.decodeFromString<ErrorResponse>(result.body)
+            errorResponse.error?.message ?: result.body
         } catch (_: Exception) {
-            body
+            result.body
         }
 
-        val retryAfter = response.headers["Retry-After"]?.toLongOrNull()?.seconds
+        val retryAfter = result.headers["retry-after"]
+            ?.firstOrNull()
+            ?.toLongOrNull()
+            ?.seconds
 
-        throw when (response.status.value) {
+        throw when (result.statusCode) {
             400 -> InvalidRequestException(errorMessage)
-            401, 403 -> AuthenticationException(response.status.value, errorMessage)
+            401, 403 -> AuthenticationException(result.statusCode, errorMessage)
             404 -> ModelNotFoundException(errorMessage)
             429 -> RateLimitException(errorMessage, retryAfter)
-            in 500..599 -> ServerException(response.status.value, errorMessage)
-            else -> ServerException(response.status.value, "Unexpected status: ${response.status}: $errorMessage")
+            in 500..599 -> ServerException(result.statusCode, errorMessage)
+            else -> ServerException(result.statusCode, "Unexpected status ${result.statusCode}: $errorMessage")
         }
     }
 }

@@ -27,31 +27,16 @@ class SerializationTest : FunSpec({
     fun fixture(name: String): String =
         SerializationTest::class.java.getResource("/fixtures/$name")!!.readText()
 
-    test("ListModelsResponse 역직렬화") {
-        val response = geminiJson.decodeFromString<ListModelsResponse>(fixture("list_models.json"))
-
-        response.models shouldHaveSize 2
-        response.models[0].name shouldBe "models/gemini-2.0-flash"
-        response.models[0].inputTokenLimit shouldBe 1048576
-        response.models[0].outputTokenLimit shouldBe 8192
-        response.models[0].supportedGenerationMethods shouldHaveSize 2
-        response.models[1].name shouldBe "models/gemini-2.5-pro"
-    }
-
     test("GenerateContentResponse 역직렬화") {
         val response = geminiJson.decodeFromString<GenerateContentResponse>(fixture("generate_content.json"))
 
         response.text shouldBe "Hello! How can I help you today?"
         response.usageMetadata.shouldNotBeNull()
         response.usageMetadata!!.totalTokenCount shouldBe 10
+        response.totalTokens shouldBe 10
         response.candidates.shouldNotBeNull()
         response.candidates!![0].finishReason shouldBe "STOP"
         response.candidates!![0].safetyRatings!! shouldHaveSize 2
-    }
-
-    test("CountTokensResponse 역직렬화") {
-        val response = geminiJson.decodeFromString<CountTokensResponse>(fixture("count_tokens.json"))
-        response.totalTokens shouldBe 7
     }
 
     test("ErrorResponse 역직렬화") {
@@ -91,14 +76,13 @@ class SerializationTest : FunSpec({
     test("unknown 필드가 있는 JSON 역직렬화 — 전방 호환성") {
         val jsonWithUnknown = """
             {
-              "totalTokens": 42,
-              "someNewField": "unknown_value",
-              "anotherFutureField": 999
+              "candidates": [{"content":{"parts":[{"text":"hi"}]}}],
+              "someNewField": "unknown_value"
             }
         """.trimIndent()
 
-        val response = geminiJson.decodeFromString<CountTokensResponse>(jsonWithUnknown)
-        response.totalTokens shouldBe 42
+        val response = geminiJson.decodeFromString<GenerateContentResponse>(jsonWithUnknown)
+        response.text shouldBe "hi"
     }
 
     test("Content 팩토리 메서드") {

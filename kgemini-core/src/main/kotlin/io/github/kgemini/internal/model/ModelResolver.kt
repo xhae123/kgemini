@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package io.github.kgemini.model
+package io.github.kgemini.internal.model
 
-import kotlinx.serialization.Serializable
+internal object ModelResolver {
 
-@Serializable
-public data class CountTokensResponse(
-    val totalTokens: Int? = null,
-)
+    private val aliases = mapOf(
+        "free" to "gemini-2.0-flash",
+        "fast" to "gemini-2.0-flash",
+        "cheap" to "gemini-2.0-flash-lite",
+        "smart" to "gemini-2.5-pro",
+    )
+
+    fun resolve(input: String): String = aliases[input.lowercase()] ?: input
+}

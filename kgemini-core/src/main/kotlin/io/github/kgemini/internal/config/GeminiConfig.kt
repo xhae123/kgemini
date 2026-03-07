@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package io.github.kgemini.model
+package io.github.kgemini.internal.config
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-public data class CountTokensRequest(
-    val contents: List<Content> = emptyList(),
-    val generateContentRequest: GenerateContentRequest? = null,
+internal data class GeminiConfig(
+    val apiKey: String,
+    val model: String,
+    val connectTimeoutMs: Long,
+    val generateTimeoutMs: Long,
+    val maxRetries: Int,
+    val retryBaseDelayMs: Long,
+    val retryMaxDelayMs: Long,
 )

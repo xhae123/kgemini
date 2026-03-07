@@ -16,8 +16,6 @@
 
 package io.github.kgemini.exception
 
-import io.github.kgemini.model.GenerateContentResponse
-import io.github.kgemini.model.UsageMetadata
 import kotlin.time.Duration
 
 public sealed class GeminiException(
@@ -103,20 +101,6 @@ public class GenerateTimeoutException(
     message: String = "Generate request timed out",
     cause: Throwable? = null,
 ) : TimeoutException(message, cause)
-
-public class StreamTimeoutException(
-    message: String = "Stream timed out",
-    cause: Throwable? = null,
-) : TimeoutException(message, cause)
-
-public class StreamInterruptedException(
-    message: String = "Stream interrupted",
-    public val receivedChunks: List<GenerateContentResponse> = emptyList(),
-    public val partialUsage: UsageMetadata? = null,
-    cause: Throwable? = null,
-) : NetworkException(message, cause) {
-    override val retryable: Boolean = true
-}
 
 // --- Serialization Exception ---
 
