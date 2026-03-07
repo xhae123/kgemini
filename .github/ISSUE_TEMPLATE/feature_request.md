@@ -16,7 +16,9 @@ Describe the feature you'd like, ideally with example API usage:
 
 ```kotlin
 // How you'd like the API to look
-gemini.newFeature("example")
+import io.github.kgemini.ask
+
+val answer = ask("example")
 ```
 
 ## Alternatives Considered
