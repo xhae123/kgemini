@@ -90,6 +90,16 @@ fix(core): handle Retry-After header case sensitivity
 test(core): add config priority tests
 ```
 
+## Questions & Discussions
+
+For questions, ideas, or general discussion, use [GitHub Discussions](../../discussions) instead of opening an issue.
+
+- **Q&A** — Ask how to use kgemini or troubleshoot issues
+- **Ideas** — Propose features or changes before writing code
+- **Show and Tell** — Share what you've built with kgemini
+
+> **Maintainer note:** To enable Discussions, go to **Settings > General > Features** and check **Discussions**.
+
 ## Pull Request Process
 
 1. Fork the repository
