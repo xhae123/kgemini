@@ -41,8 +41,9 @@ That's the whole tutorial.
 
 ## Why kgemini?
 
+Other SDKs:
+
 ```kotlin
-// Other SDKs
 val model = GenerativeModel.Builder()
     .setModelName("gemini-2.0-flash")
     .setApiKey(apiKey)
@@ -54,8 +55,11 @@ val request = GenerateContentRequest.newBuilder()
     .build()
 val response = model.generateContent(request)
 val text = response.candidates[0].content.parts[0].text
+```
 
-// kgemini
+kgemini:
+
+```kotlin
 val text = ask("hello")
 ```
 
