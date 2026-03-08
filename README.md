@@ -23,15 +23,21 @@ No builder. No config object. No boilerplate. **Just ask.**
 
 ## Quick Start
 
+**1. Add dependency**
+
 ```kotlin
-// 1. Add dependency
-dependencies {
-    implementation("io.github.kgemini:kgemini-core:0.2.0")
-}
+// build.gradle.kts
+implementation("io.github.kgemini:kgemini-core:0.2.0")
 ```
 
+```groovy
+// build.gradle
+implementation 'io.github.kgemini:kgemini-core:0.2.0'
+```
+
+**2. Set your API key** ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
+
 ```bash
-# 2. Set your API key
 export GEMINI_API_KEY=your-api-key
 ```
 
@@ -90,6 +96,17 @@ val text = ask("hello")
 - **Zero config** — Works out of the box with sensible defaults.
 - **Typed errors** — Sealed exception hierarchy. No string matching.
 - **Auto retry** — Retryable errors (429, 5xx) are automatically retried with exponential backoff.
+
+## Java
+
+Kotlin top-level functions are accessed via `KGeminiKt` in Java:
+
+```java
+import static io.github.kgemini.KGeminiKt.ask;
+import static io.github.kgemini.KGeminiKt.generate;
+
+String answer = ask("Explain virtual threads in one sentence");
+```
 
 ## Full Response
 
@@ -170,18 +187,20 @@ export GEMINI_TIMEOUT=60s
 
 Errors are typed. Retryable ones are automatically retried.
 
+> **No API key?** kgemini throws `IllegalStateException` immediately with a clear message — no silent failures.
+
 ```kotlin
 try {
     ask("question")
 } catch (e: GeminiException) {
     when (e) {
-        is RateLimitException    -> // auto-retried; thrown after exhausting retries
-        is AuthenticationException -> // check your API key
-        is ModelNotFoundException  -> // check model ID
-        is InvalidRequestException -> // fix your prompt
-        is ServerException         -> // Gemini is down
-        is ConnectionException     -> // check network
-        is TimeoutException        -> // took too long
+        is RateLimitException      -> // auto-retried; thrown after exhausting retries
+        is AuthenticationException -> // invalid API key (401/403)
+        is ModelNotFoundException  -> // invalid model ID (404)
+        is InvalidRequestException -> // fix your prompt (400)
+        is ServerException         -> // Gemini is down (5xx, auto-retried)
+        is ConnectionException     -> // check network (auto-retried)
+        is TimeoutException        -> // took too long (auto-retried)
     }
 }
 ```
