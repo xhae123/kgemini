@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.1] - 2026-03-08
+
+### Changed
+
+- Default models updated from deprecated gemini-2.0 to gemini-2.5 series
+  - `free` → `gemini-2.5-flash` (was `gemini-2.0-flash`)
+  - `fast`/`cheap` → `gemini-2.5-flash-lite` (was `gemini-2.0-flash`/`gemini-2.0-flash-lite`)
+- API key authentication via `x-goog-api-key` header (was query parameter)
+- Config files read from classpath (`src/main/resources/`) instead of CWD
+- Config priority simplified: `gemini.yml` > `gemini.properties` > defaults
+- API key configured via `gemini.api-key` in config files
+
+### Added
+
+- Java interop documentation (`KGeminiKt.ask()`, `KGeminiKt.generate()`)
+- `CODEOWNERS` for automatic PR reviewer assignment
+- GitHub Discussions guide in CONTRIBUTING.md
+- `gemini.yml` / `gemini.properties` / `.env` added to `.gitignore`
+
+### Removed
+
+- `FLASH_2_0`, `FLASH_2_0_LITE` from `GeminiModel.Known` (deprecated, retiring June 2026)
+- Environment variable configuration (`GEMINI_API_KEY`, `GEMINI_MODEL`, etc.)
+
 ## [0.2.0] - 2026-03-08
 
 ### Changed
@@ -15,8 +39,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- File-based configuration: `gemini.properties`, `gemini.yml`, environment variables
-- Config priority: env var > gemini.yml > gemini.properties > defaults
+- File-based configuration: `gemini.properties`, `gemini.yml`
+- Config priority: `gemini.yml` > `gemini.properties` > defaults
 - Model aliases: `free`, `fast`, `cheap`, `smart`
 - Duration parsing for config values: `60s`, `500ms`, raw milliseconds
 - `response.totalTokens` convenience property

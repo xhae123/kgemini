@@ -31,7 +31,7 @@ What actually happened. Include the full stack trace if applicable.
 
 ## Environment
 
-- **kgemini version:** 0.2.0
+- **kgemini version:** 0.2.x
 - **Kotlin version:** 2.1.x
 - **JDK version:** 21+
 - **OS:** macOS / Linux / Windows

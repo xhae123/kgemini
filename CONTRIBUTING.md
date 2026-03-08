@@ -98,7 +98,7 @@ For questions, ideas, or general discussion, use [GitHub Discussions](../../disc
 - **Ideas** — Propose features or changes before writing code
 - **Show and Tell** — Share what you've built with kgemini
 
-> **Maintainer note:** To enable Discussions, go to **Settings > General > Features** and check **Discussions**.
+> **Maintainer:** Enable Discussions at **repo Settings > General > Features > Discussions**.
 
 ## Pull Request Process
 

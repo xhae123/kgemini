@@ -6,7 +6,7 @@ If you discover a security vulnerability in kgemini, please report it responsibl
 
 **Do NOT open a public GitHub issue for security vulnerabilities.**
 
-Instead, please email: **security@kgemini.dev** (or open a private security advisory on GitHub)
+Instead, please use [GitHub Security Advisories](https://github.com/xhae123/kgemini/security/advisories/new) to report privately.
 
 ### What to include
 
@@ -26,7 +26,7 @@ Instead, please email: **security@kgemini.dev** (or open a private security advi
 | Version | Supported |
 |---------|-----------|
 | 0.2.x   | Yes       |
-| 0.1.x   | No        |
+| < 0.2    | No        |
 
 ## Scope
 
