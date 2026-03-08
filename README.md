@@ -35,10 +35,10 @@ implementation("io.github.kgemini:kgemini-core:0.2.0")
 implementation 'io.github.kgemini:kgemini-core:0.2.0'
 ```
 
-**2. Set your API key** ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
+**2. Add API key** to `src/main/resources/gemini.properties` ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
 
-```bash
-export GEMINI_API_KEY=your-api-key
+```properties
+gemini.api-key=your-api-key
 ```
 
 ```kotlin
@@ -129,27 +129,29 @@ Pick a model by alias or use any Gemini model ID directly.
 | **`cheap`** | `gemini-2.5-flash-lite` | Bulk processing on a budget |
 | **`smart`** | `gemini-2.5-pro` | Complex reasoning, planning |
 
-```bash
-# Switch model — no code change
-export GEMINI_MODEL=smart
+```properties
+# Switch model — no code change (gemini.properties)
+gemini.model=smart
 ```
 
 Any valid model ID works too: `gemini-2.5-flash-latest`, `gemini-2.5-pro-001`, etc.
 
 ## Configuration
 
-Zero config required. Override only when needed:
+Zero config required. Override only when needed.
+
+Config files go in your **classpath** (`src/main/resources/`):
 
 <table>
 <tr>
 <th>gemini.properties</th>
 <th>gemini.yml</th>
-<th>Environment</th>
 </tr>
 <tr>
 <td>
 
 ```properties
+gemini.api-key=your-api-key
 gemini.model=smart
 gemini.timeout=60s
 ```
@@ -159,23 +161,25 @@ gemini.timeout=60s
 
 ```yaml
 gemini:
+  api-key: your-api-key
   model: smart
   timeout: 60s
-```
-
-</td>
-<td>
-
-```bash
-export GEMINI_MODEL=smart
-export GEMINI_TIMEOUT=60s
 ```
 
 </td>
 </tr>
 </table>
 
-**Priority:** env var > `gemini.yml` > `gemini.properties` > defaults
+```
+your-project/
+└── src/main/resources/
+    ├── gemini.properties   ← here
+    └── gemini.yml          ← or here
+```
+
+> **Tip:** Add `gemini.properties` and `gemini.yml` to your `.gitignore` if they contain API keys.
+
+**Priority:** `gemini.yml` > `gemini.properties` > defaults
 
 | Key | Default |
 |-----|---------|

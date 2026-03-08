@@ -16,7 +16,6 @@
 
 package io.github.kgemini.internal.config
 
-import java.io.File
 import java.util.Properties
 
 internal object ConfigLoader {
@@ -30,54 +29,53 @@ internal object ConfigLoader {
 
     fun load(): GeminiConfig {
         return resolve(
-            env = System::getenv,
             properties = loadProperties(),
             yaml = loadYaml(),
         )
     }
 
     internal fun resolve(
-        env: (String) -> String?,
         properties: Map<String, String>,
         yaml: Map<String, String>,
     ): GeminiConfig {
-        fun lookup(envKey: String, fileKey: String): String? =
-            env(envKey) ?: yaml[fileKey] ?: properties[fileKey]
+        fun lookup(key: String): String? =
+            yaml[key] ?: properties[key]
 
-        val apiKey = lookup("GEMINI_API_KEY", "gemini.api-key")
-            ?: error("API key not provided. Set GEMINI_API_KEY environment variable or configure gemini.api-key in gemini.properties/gemini.yml.")
+        val apiKey = lookup("gemini.api-key")
+            ?: error("API key not provided. Configure gemini.api-key in gemini.properties or gemini.yml (src/main/resources/).")
 
         return GeminiConfig(
             apiKey = apiKey,
-            model = lookup("GEMINI_MODEL", "gemini.model") ?: DEFAULT_MODEL,
-            connectTimeoutMs = lookup("GEMINI_CONNECT_TIMEOUT", "gemini.connect-timeout")
+            model = lookup("gemini.model") ?: DEFAULT_MODEL,
+            connectTimeoutMs = lookup("gemini.connect-timeout")
                 ?.parseMillis() ?: DEFAULT_CONNECT_TIMEOUT_MS,
-            generateTimeoutMs = lookup("GEMINI_TIMEOUT", "gemini.timeout")
+            generateTimeoutMs = lookup("gemini.timeout")
                 ?.parseMillis() ?: DEFAULT_GENERATE_TIMEOUT_MS,
-            maxRetries = lookup("GEMINI_MAX_RETRIES", "gemini.max-retries")
+            maxRetries = lookup("gemini.max-retries")
                 ?.toIntOrNull() ?: DEFAULT_MAX_RETRIES,
-            retryBaseDelayMs = lookup("GEMINI_RETRY_BASE_DELAY", "gemini.retry-base-delay")
+            retryBaseDelayMs = lookup("gemini.retry-base-delay")
                 ?.parseMillis() ?: DEFAULT_RETRY_BASE_DELAY_MS,
-            retryMaxDelayMs = lookup("GEMINI_RETRY_MAX_DELAY", "gemini.retry-max-delay")
+            retryMaxDelayMs = lookup("gemini.retry-max-delay")
                 ?.parseMillis() ?: DEFAULT_RETRY_MAX_DELAY_MS,
         )
     }
 
     private fun loadProperties(): Map<String, String> {
-        val file = File("gemini.properties")
-        if (!file.exists()) return emptyMap()
+        val stream = Thread.currentThread().contextClassLoader
+            .getResourceAsStream("gemini.properties") ?: return emptyMap()
 
         val props = Properties()
-        file.inputStream().use { props.load(it) }
+        stream.use { props.load(it) }
 
         return props.entries.associate { (k, v) -> k.toString() to v.toString() }
     }
 
     private fun loadYaml(): Map<String, String> {
-        val file = File("gemini.yml")
-        if (!file.exists()) return emptyMap()
+        val text = Thread.currentThread().contextClassLoader
+            .getResourceAsStream("gemini.yml")?.use { it.reader().readText() }
+            ?: return emptyMap()
 
-        return YamlParser.parse(file.readText())
+        return YamlParser.parse(text)
     }
 }
 

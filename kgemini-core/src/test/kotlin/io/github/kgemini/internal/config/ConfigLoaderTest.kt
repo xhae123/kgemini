@@ -23,12 +23,9 @@ import io.kotest.matchers.string.shouldContain
 
 class ConfigLoaderTest : FunSpec({
 
-    fun noEnv(@Suppress("UNUSED_PARAMETER") key: String): String? = null
-
     test("defaults — API key만 제공하면 나머지는 기본값") {
         val config = ConfigLoader.resolve(
-            env = { if (it == "GEMINI_API_KEY") "test-key" else null },
-            properties = emptyMap(),
+            properties = mapOf("gemini.api-key" to "test-key"),
             yaml = emptyMap(),
         )
 
@@ -39,26 +36,20 @@ class ConfigLoaderTest : FunSpec({
         config.maxRetries shouldBe 3
     }
 
-    test("우선순위: env > yaml > properties") {
+    test("우선순위: yaml > properties") {
         val config = ConfigLoader.resolve(
-            env = { when (it) {
-                "GEMINI_API_KEY" -> "env-key"
-                "GEMINI_MODEL" -> "smart"
-                else -> null
-            }},
-            properties = mapOf("gemini.model" to "cheap", "gemini.timeout" to "10000"),
-            yaml = mapOf("gemini.model" to "fast", "gemini.timeout" to "20000"),
+            properties = mapOf("gemini.api-key" to "prop-key", "gemini.model" to "cheap", "gemini.timeout" to "10000"),
+            yaml = mapOf("gemini.api-key" to "yaml-key", "gemini.model" to "fast", "gemini.timeout" to "20000"),
         )
 
-        config.apiKey shouldBe "env-key"
-        config.model shouldBe "smart"       // env wins
-        config.generateTimeoutMs shouldBe 20_000L  // yaml wins over properties
+        config.apiKey shouldBe "yaml-key"
+        config.model shouldBe "fast"                   // yaml wins
+        config.generateTimeoutMs shouldBe 20_000L      // yaml wins
     }
 
     test("yaml이 properties보다 우선") {
         val config = ConfigLoader.resolve(
-            env = { if (it == "GEMINI_API_KEY") "key" else null },
-            properties = mapOf("gemini.model" to "cheap"),
+            properties = mapOf("gemini.api-key" to "key", "gemini.model" to "cheap"),
             yaml = mapOf("gemini.model" to "fast"),
         )
 
@@ -68,7 +59,6 @@ class ConfigLoaderTest : FunSpec({
     test("API key 없으면 에러") {
         val ex = shouldThrow<IllegalStateException> {
             ConfigLoader.resolve(
-                env = ::noEnv,
                 properties = emptyMap(),
                 yaml = emptyMap(),
             )
@@ -78,9 +68,8 @@ class ConfigLoaderTest : FunSpec({
 
     test("duration 파싱 — '60s' 형식 지원") {
         val config = ConfigLoader.resolve(
-            env = { if (it == "GEMINI_API_KEY") "key" else null },
             properties = emptyMap(),
-            yaml = mapOf("gemini.timeout" to "60s", "gemini.connect-timeout" to "10s"),
+            yaml = mapOf("gemini.api-key" to "key", "gemini.timeout" to "60s", "gemini.connect-timeout" to "10s"),
         )
 
         config.generateTimeoutMs shouldBe 60_000L
@@ -89,8 +78,7 @@ class ConfigLoaderTest : FunSpec({
 
     test("duration 파싱 — 밀리초 숫자도 지원") {
         val config = ConfigLoader.resolve(
-            env = { if (it == "GEMINI_API_KEY") "key" else null },
-            properties = mapOf("gemini.timeout" to "45000"),
+            properties = mapOf("gemini.api-key" to "key", "gemini.timeout" to "45000"),
             yaml = emptyMap(),
         )
 
@@ -99,8 +87,7 @@ class ConfigLoaderTest : FunSpec({
 
     test("duration 파싱 — '500ms' 형식 지원") {
         val config = ConfigLoader.resolve(
-            env = { if (it == "GEMINI_API_KEY") "key" else null },
-            properties = mapOf("gemini.retry-base-delay" to "500ms"),
+            properties = mapOf("gemini.api-key" to "key", "gemini.retry-base-delay" to "500ms"),
             yaml = emptyMap(),
         )
 
