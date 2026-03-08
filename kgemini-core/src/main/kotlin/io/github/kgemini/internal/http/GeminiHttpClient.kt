@@ -26,10 +26,12 @@ internal class GeminiHttpClient(
 ) {
     inline fun <reified T, reified R> post(url: String, body: T): R {
         val jsonBody = geminiJson.encodeToString<T>(body)
-        val urlWithKey = "$url?key=$apiKey"
-        val headers = mapOf("Content-Type" to "application/json")
+        val headers = mapOf(
+            "Content-Type" to "application/json",
+            "x-goog-api-key" to apiKey,
+        )
 
-        val result = executor.execute(urlWithKey, jsonBody, headers, generateTimeoutMs)
+        val result = executor.execute(url, jsonBody, headers, generateTimeoutMs)
         ErrorMapper.throwIfError(result)
 
         return geminiJson.decodeFromString(result.body)

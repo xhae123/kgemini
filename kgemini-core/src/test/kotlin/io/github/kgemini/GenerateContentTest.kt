@@ -44,9 +44,9 @@ class GenerateContentTest : FunSpec({
     fun testClient(executor: HttpExecutor) = GeminiClient(testConfig(), executor)
 
     test("generate(prompt) — 정상 응답, .text 검증") {
-        val client = testClient { url, body, _, _ ->
+        val client = testClient { url, body, headers, _ ->
             url shouldContain ":generateContent"
-            url shouldContain "key=test-key"
+            headers["x-goog-api-key"] shouldBe "test-key"
             body shouldContain "Hello"
 
             HttpResult(200, fixture("generate_content.json"), emptyMap())
