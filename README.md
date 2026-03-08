@@ -57,26 +57,21 @@ That's the whole tutorial.
 
 <table>
 <tr>
-<th>Other SDKs (8 lines)</th>
-<th>kgemini (1 line)</th>
+<th>Google Official SDK</th>
+<th>kgemini</th>
 </tr>
 <tr>
 <td>
 
 ```kotlin
-val model = GenerativeModel.Builder()
-    .setModelName("gemini-2.5-flash")
-    .setApiKey(apiKey)
-    .build()
-val request = GenerateContentRequest.newBuilder()
-    .addContents(Content.newBuilder()
-        .addParts(Part.newBuilder()
-            .setText("hello").build())
-        .build())
-    .build()
-val response = model.generateContent(request)
-val text = response.candidates[0]
-    .content.parts[0].text
+val model = GenerativeModel(
+    modelName = "gemini-2.5-flash",
+    apiKey = System.getenv("GEMINI_API_KEY"),
+)
+
+// suspend — needs coroutine scope
+val response = model.generateContent("hello")
+val text = response.text
 ```
 
 </td>
@@ -92,7 +87,7 @@ val text = ask("hello")
 
 ### Design Choices
 
-- **Blocking I/O** — Virtual Thread friendly. No coroutines needed.
+- **Blocking I/O** — No coroutines needed. Works naturally with Virtual Threads.
 - **Zero dependencies** — Only `kotlinx-serialization-json`. That's it.
 - **Zero config** — Works out of the box with sensible defaults.
 - **Typed errors** — Sealed exception hierarchy. No string matching.
@@ -172,13 +167,6 @@ gemini.timeout=60s
 </tr>
 </table>
 
-```
-your-project/
-└── src/main/resources/
-    ├── gemini.yml          ← recommended
-    └── gemini.properties   ← also works
-```
-
 > **Tip:** Add `gemini.properties` and `gemini.yml` to your `.gitignore` if they contain API keys.
 
 **Priority:** `gemini.yml` > `gemini.properties` > defaults
@@ -211,13 +199,20 @@ try {
 }
 ```
 
-## Virtual Threads
+## Virtual Threads (Recommended)
 
-kgemini uses blocking I/O by design — pair with JDK 21+ Virtual Threads for scalable concurrency without coroutines.
+kgemini uses blocking I/O — it runs on the calling thread. On a platform thread, that thread is occupied for the entire API call. On a Virtual Thread, the JVM automatically suspends the carrier thread during I/O, so thousands of concurrent calls cost almost nothing.
+
+**We recommend running kgemini on Virtual Threads.**
 
 ```properties
-# Spring Boot 3.2+ — one line, zero code change
+# Spring Boot 3.2+ — one line, done
 spring.threads.virtual.enabled=true
+```
+
+```kotlin
+// Without Spring — just as easy
+val executor = Executors.newVirtualThreadPerTaskExecutor()
 ```
 
 ## Requirements
