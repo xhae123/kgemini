@@ -12,6 +12,10 @@ dependencies {
     api(project(":kgemini-core"))
 }
 
+signing {
+    useGpgCmd()
+}
+
 mavenPublishing {
     publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()

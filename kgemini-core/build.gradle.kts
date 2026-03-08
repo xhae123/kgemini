@@ -20,6 +20,10 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
+signing {
+    useGpgCmd()
+}
+
 mavenPublishing {
     publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
