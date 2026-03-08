@@ -27,12 +27,12 @@ No builder. No config object. No boilerplate. **Just ask.**
 
 ```kotlin
 // build.gradle.kts
-implementation("io.github.kgemini:kgemini-core:0.2.0")
+implementation("io.github.kgemini:kgemini-core:0.2.1")
 ```
 
 ```groovy
 // build.gradle
-implementation 'io.github.kgemini:kgemini-core:0.2.0'
+implementation 'io.github.kgemini:kgemini-core:0.2.1'
 ```
 
 **2. Add API key** to `src/main/resources/gemini.yml` ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
