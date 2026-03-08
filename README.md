@@ -35,10 +35,11 @@ implementation("io.github.kgemini:kgemini-core:0.2.0")
 implementation 'io.github.kgemini:kgemini-core:0.2.0'
 ```
 
-**2. Add API key** to `src/main/resources/gemini.properties` ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
+**2. Add API key** to `src/main/resources/gemini.yml` ([Get one here](https://aistudio.google.com/apikey) — free, no credit card)
 
-```properties
-gemini.api-key=your-api-key
+```yaml
+gemini:
+  api-key: your-api-key
 ```
 
 ```kotlin
@@ -129,9 +130,10 @@ Pick a model by alias or use any Gemini model ID directly.
 | **`cheap`** | `gemini-2.5-flash-lite` | Bulk processing on a budget |
 | **`smart`** | `gemini-2.5-pro` | Complex reasoning, planning |
 
-```properties
-# Switch model — no code change (gemini.properties)
-gemini.model=smart
+```yaml
+# Switch model — no code change (gemini.yml)
+gemini:
+  model: smart
 ```
 
 Any valid model ID works too: `gemini-2.5-flash-latest`, `gemini-2.5-pro-001`, etc.
@@ -144,19 +146,10 @@ Config files go in your **classpath** (`src/main/resources/`):
 
 <table>
 <tr>
+<th>gemini.yml (recommended)</th>
 <th>gemini.properties</th>
-<th>gemini.yml</th>
 </tr>
 <tr>
-<td>
-
-```properties
-gemini.api-key=your-api-key
-gemini.model=smart
-gemini.timeout=60s
-```
-
-</td>
 <td>
 
 ```yaml
@@ -167,14 +160,23 @@ gemini:
 ```
 
 </td>
+<td>
+
+```properties
+gemini.api-key=your-api-key
+gemini.model=smart
+gemini.timeout=60s
+```
+
+</td>
 </tr>
 </table>
 
 ```
 your-project/
 └── src/main/resources/
-    ├── gemini.properties   ← here
-    └── gemini.yml          ← or here
+    ├── gemini.yml          ← recommended
+    └── gemini.properties   ← also works
 ```
 
 > **Tip:** Add `gemini.properties` and `gemini.yml` to your `.gitignore` if they contain API keys.
